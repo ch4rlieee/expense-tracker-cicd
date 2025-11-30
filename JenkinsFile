@@ -70,10 +70,9 @@ pipeline {
             steps {
                 echo '========== Stage 5: Containerized Deployment =========='
                 script {
-                    // Stop and remove existing container if running
+                    // Stop and remove existing container if running (force remove)
                     sh """
-                        docker stop ${CONTAINER_NAME} || true
-                        docker rm ${CONTAINER_NAME} || true
+                        docker rm -f ${CONTAINER_NAME} || true
                     """
                     
                     // Run the application container
@@ -121,10 +120,9 @@ pipeline {
                             docker network connect test-network ${CONTAINER_NAME} || true
                         """
                         
-                        // Create alias for the app container
+                        // Recreate app container with network alias
                         sh """
-                            docker stop ${CONTAINER_NAME}
-                            docker rm ${CONTAINER_NAME}
+                            docker rm -f ${CONTAINER_NAME} || true
                             docker run -d \
                                 --name ${CONTAINER_NAME} \
                                 --network test-network \
@@ -178,8 +176,7 @@ pipeline {
             // Cleanup on failure
             script {
                 sh """
-                    docker stop ${CONTAINER_NAME} || true
-                    docker rm ${CONTAINER_NAME} || true
+                    docker rm -f ${CONTAINER_NAME} || true
                     docker network rm test-network || true
                 """
             }
