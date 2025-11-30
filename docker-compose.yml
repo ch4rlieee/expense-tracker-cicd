@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: expense-tracker-app
+    ports:
+      - "8080:8080"
+    volumes:
+      - expense-data:/data
+    environment:
+      - PORT=8080
+      - DATA_DIR=/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  selenium-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.selenium
+    container_name: selenium-tests
+    depends_on:
+      - webapp
+    volumes:
+      - ./test-results:/test-results
+    networks:
+      - app-network
+    profiles:
+      - testing
+
+volumes:
+  expense-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
