@@ -80,7 +80,7 @@ pipeline {
                         docker run -d \
                             --name ${CONTAINER_NAME} \
                             --network bridge \
-                            -p 8080:8085 \
+                            -p 8080:8080 \
                             -v expense-data:/data \
                             ${DOCKER_IMAGE}:${DOCKER_TAG}
                     """
