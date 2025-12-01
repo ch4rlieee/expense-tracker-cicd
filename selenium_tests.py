@@ -5,14 +5,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 from datetime import date
 
 class ExpenseTrackerTests(unittest.TestCase):
     
     @classmethod
     def setUpClass(cls):
-        """Set up Chrome driver with headless options"""
+        """Set up Chrome driver with headless options using Remote WebDriver"""
         chrome_options = Options()
         
         # Essential Chrome arguments for Docker/headless environment
@@ -23,8 +22,7 @@ class ExpenseTrackerTests(unittest.TestCase):
         chrome_options.add_argument('--disable-software-rasterizer')
         chrome_options.add_argument('--disable-extensions')
         chrome_options.add_argument('--disable-setuid-sandbox')
-        chrome_options.add_argument('--window-size=1920,1080')
-        chrome_options.add_argument('--remote-debugging-port=9222')
+        chrome_options. add_argument('--window-size=1920,1080')
         chrome_options.add_argument('--disable-dev-tools')
         chrome_options.add_argument('--disable-background-networking')
         chrome_options.add_argument('--disable-default-apps')
@@ -32,12 +30,11 @@ class ExpenseTrackerTests(unittest.TestCase):
         chrome_options.add_argument('--metrics-recording-only')
         chrome_options.add_argument('--mute-audio')
         
-        # Additional stability options
-        chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        chrome_options.add_experimental_option('useAutomationExtension', False)
-        
-        # Initialize the driver
-        cls.driver = webdriver.Chrome(options=chrome_options)
+        # Connect to the Remote WebDriver (Selenium standalone-chrome runs on port 4444)
+        cls. driver = webdriver. Remote(
+            command_executor='http://localhost:4444/wd/hub',
+            options=chrome_options
+        )
         cls.driver.implicitly_wait(20)
         
         # Application URL - use Docker network alias
@@ -58,20 +55,20 @@ class ExpenseTrackerTests(unittest.TestCase):
         print("\n=== Running Test 1: Page Title and Elements ===")
         
         # Verify page title
-        self.assertIn("Expense Tracker", self.driver.title)
+        self. assertIn("Expense Tracker", self.driver.title)
         print("✓ Page title verified")
         
         # Verify main heading
-        heading = self.driver.find_element(By.TAG_NAME, "h1")
+        heading = self.driver.find_element(By. TAG_NAME, "h1")
         self.assertEqual(heading.text, "Expense Tracker")
         print("✓ Main heading found")
         
         # Verify input fields exist
-        title_input = self.driver.find_element(By.ID, "title")
-        self.assertIsNotNone(title_input)
+        title_input = self. driver.find_element(By.ID, "title")
+        self. assertIsNotNone(title_input)
         print("✓ Title input field found")
         
-        amount_input = self.driver.find_element(By.ID, "amount")
+        amount_input = self. driver.find_element(By.ID, "amount")
         self.assertIsNotNone(amount_input)
         print("✓ Amount input field found")
         
@@ -79,19 +76,19 @@ class ExpenseTrackerTests(unittest.TestCase):
         self.assertIsNotNone(category_input)
         print("✓ Category input field found")
         
-        date_input = self.driver.find_element(By.ID, "date")
+        date_input = self. driver.find_element(By.ID, "date")
         self.assertIsNotNone(date_input)
         print("✓ Date input field found")
         
         # Verify Add button exists
-        add_button = self.driver.find_element(By.ID, "addBtn")
-        self.assertIsNotNone(add_button)
+        add_button = self. driver.find_element(By.ID, "addBtn")
+        self. assertIsNotNone(add_button)
         self.assertEqual(add_button.text, "Add")
         print("✓ Add button found")
         
         # Verify table exists
-        table = self.driver.find_element(By.TAG_NAME, "table")
-        self.assertIsNotNone(table)
+        table = self.driver.find_element(By. TAG_NAME, "table")
+        self. assertIsNotNone(table)
         print("✓ Expenses table found")
         
         print("✓✓✓ Test 1 PASSED: All page elements verified successfully")
@@ -101,14 +98,14 @@ class ExpenseTrackerTests(unittest.TestCase):
         print("\n=== Running Test 2: Add Expense Functionality ===")
         
         # Fill in the form
-        title_input = self.driver.find_element(By.ID, "title")
+        title_input = self. driver.find_element(By.ID, "title")
         title_input.clear()
         title_input.send_keys("Test Coffee")
         print("✓ Entered title: Test Coffee")
         
-        amount_input = self.driver.find_element(By.ID, "amount")
+        amount_input = self.driver. find_element(By.ID, "amount")
         amount_input.clear()
-        amount_input.send_keys("5.50")
+        amount_input. send_keys("5.50")
         print("✓ Entered amount: 5.50")
         
         category_input = self.driver.find_element(By.ID, "category")
@@ -116,14 +113,14 @@ class ExpenseTrackerTests(unittest.TestCase):
         category_input.send_keys("Food")
         print("✓ Entered category: Food")
         
-        date_input = self.driver.find_element(By.ID, "date")
+        date_input = self. driver.find_element(By.ID, "date")
         date_input.clear()
-        today = date.today().strftime("%Y-%m-%d")
-        date_input.send_keys(today)
+        today = date.today(). strftime("%Y-%m-%d")
+        date_input. send_keys(today)
         print(f"✓ Entered date: {today}")
         
         # Click Add button
-        add_button = self.driver.find_element(By.ID, "addBtn")
+        add_button = self.driver. find_element(By.ID, "addBtn")
         add_button.click()
         print("✓ Clicked Add button")
         
@@ -134,11 +131,11 @@ class ExpenseTrackerTests(unittest.TestCase):
         try:
             # Wait for table body to have rows
             WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "#tbody tr"))
+                EC.presence_of_element_located((By. CSS_SELECTOR, "#tbody tr"))
             )
             
-            tbody = self.driver.find_element(By.ID, "tbody")
-            rows = tbody.find_elements(By.TAG_NAME, "tr")
+            tbody = self.driver. find_element(By.ID, "tbody")
+            rows = tbody. find_elements(By.TAG_NAME, "tr")
             
             # Check if we have at least one row
             self.assertGreater(len(rows), 0, "No expenses found in table")
@@ -146,7 +143,7 @@ class ExpenseTrackerTests(unittest.TestCase):
             
             # Verify the first row contains our test data
             first_row = rows[0]
-            cells = first_row.find_elements(By.TAG_NAME, "td")
+            cells = first_row. find_elements(By.TAG_NAME, "td")
             
             # Check title
             self.assertIn("Test Coffee", cells[0].text)
@@ -161,8 +158,8 @@ class ExpenseTrackerTests(unittest.TestCase):
             print(f"✓ Category verified: {cells[2].text}")
             
             # Verify stats section updated
-            stats = self.driver.find_element(By.ID, "stats")
-            self.assertIsNotNone(stats)
+            stats = self.driver. find_element(By.ID, "stats")
+            self. assertIsNotNone(stats)
             stats_text = stats.text
             self.assertIn("Total:", stats_text)
             print(f"✓ Stats section updated: {stats_text}")
@@ -172,7 +169,7 @@ class ExpenseTrackerTests(unittest.TestCase):
         except Exception as e:
             print(f"✗ Test 2 FAILED: {str(e)}")
             # Take a screenshot for debugging
-            self.driver.save_screenshot("/test-results/test_02_failure.png")
+            self.driver. save_screenshot("/test-results/test_02_failure.png")
             raise
 
 def suite():
