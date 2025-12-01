@@ -22,7 +22,7 @@ class ExpenseTrackerTests(unittest.TestCase):
         
         # Initialize the driver
         cls.driver = webdriver.Chrome(options=chrome_options)
-        cls.driver.implicitly_wait(10)
+        cls.driver.implicitly_wait(20)
         
         # Application URL - update this to match your deployment
         cls.base_url = "http://webapp:8080"
