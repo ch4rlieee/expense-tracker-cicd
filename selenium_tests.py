@@ -1,7 +1,7 @@
 import unittest
 import time
 from selenium import webdriver
-from selenium.webdriver.common.by import By
+from selenium.webdriver. common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
@@ -22,7 +22,7 @@ class ExpenseTrackerTests(unittest.TestCase):
         chrome_options.add_argument('--disable-software-rasterizer')
         chrome_options.add_argument('--disable-extensions')
         chrome_options.add_argument('--disable-setuid-sandbox')
-        chrome_options. add_argument('--window-size=1920,1080')
+        chrome_options.add_argument('--window-size=1920,1080')
         chrome_options.add_argument('--disable-dev-tools')
         chrome_options.add_argument('--disable-background-networking')
         chrome_options.add_argument('--disable-default-apps')
@@ -59,13 +59,13 @@ class ExpenseTrackerTests(unittest.TestCase):
         print("✓ Page title verified")
         
         # Verify main heading
-        heading = self.driver.find_element(By. TAG_NAME, "h1")
+        heading = self.driver.find_element(By.TAG_NAME, "h1")
         self.assertEqual(heading.text, "Expense Tracker")
         print("✓ Main heading found")
         
         # Verify input fields exist
         title_input = self. driver.find_element(By.ID, "title")
-        self. assertIsNotNone(title_input)
+        self.assertIsNotNone(title_input)
         print("✓ Title input field found")
         
         amount_input = self. driver.find_element(By.ID, "amount")
@@ -76,13 +76,13 @@ class ExpenseTrackerTests(unittest.TestCase):
         self.assertIsNotNone(category_input)
         print("✓ Category input field found")
         
-        date_input = self. driver.find_element(By.ID, "date")
-        self.assertIsNotNone(date_input)
+        date_input = self.driver. find_element(By.ID, "date")
+        self. assertIsNotNone(date_input)
         print("✓ Date input field found")
         
         # Verify Add button exists
         add_button = self. driver.find_element(By.ID, "addBtn")
-        self. assertIsNotNone(add_button)
+        self.assertIsNotNone(add_button)
         self.assertEqual(add_button.text, "Add")
         print("✓ Add button found")
         
@@ -103,9 +103,9 @@ class ExpenseTrackerTests(unittest.TestCase):
         title_input.send_keys("Test Coffee")
         print("✓ Entered title: Test Coffee")
         
-        amount_input = self.driver. find_element(By.ID, "amount")
-        amount_input.clear()
-        amount_input. send_keys("5.50")
+        amount_input = self.driver.find_element(By.ID, "amount")
+        amount_input. clear()
+        amount_input.send_keys("5.50")
         print("✓ Entered amount: 5.50")
         
         category_input = self.driver.find_element(By.ID, "category")
@@ -134,8 +134,8 @@ class ExpenseTrackerTests(unittest.TestCase):
                 EC.presence_of_element_located((By. CSS_SELECTOR, "#tbody tr"))
             )
             
-            tbody = self.driver. find_element(By.ID, "tbody")
-            rows = tbody. find_elements(By.TAG_NAME, "tr")
+            tbody = self.driver.find_element(By.ID, "tbody")
+            rows = tbody.find_elements(By.TAG_NAME, "tr")
             
             # Check if we have at least one row
             self.assertGreater(len(rows), 0, "No expenses found in table")
@@ -158,8 +158,8 @@ class ExpenseTrackerTests(unittest.TestCase):
             print(f"✓ Category verified: {cells[2].text}")
             
             # Verify stats section updated
-            stats = self.driver. find_element(By.ID, "stats")
-            self. assertIsNotNone(stats)
+            stats = self. driver.find_element(By.ID, "stats")
+            self.assertIsNotNone(stats)
             stats_text = stats.text
             self.assertIn("Total:", stats_text)
             print(f"✓ Stats section updated: {stats_text}")
@@ -169,14 +169,14 @@ class ExpenseTrackerTests(unittest.TestCase):
         except Exception as e:
             print(f"✗ Test 2 FAILED: {str(e)}")
             # Take a screenshot for debugging
-            self.driver. save_screenshot("/test-results/test_02_failure.png")
+            self. driver.save_screenshot("/test-results/test_02_failure.png")
             raise
 
 def suite():
     """Create test suite"""
     test_suite = unittest.TestSuite()
     # Use TestLoader instead of deprecated makeSuite
-    test_suite.addTests(unittest.TestLoader().loadTestsFromTestCase(ExpenseTrackerTests))
+    test_suite. addTests(unittest. TestLoader().loadTestsFromTestCase(ExpenseTrackerTests))
     return test_suite
 
 if __name__ == "__main__":
