@@ -1,29 +1,15 @@
-FROM python:3.11-slim
+FROM selenium/standalone-chrome:latest
 
-# Install dependencies for Chrome and Selenium
+USER root
+
+# Install Python
 RUN apt-get update && apt-get install -y \
-    wget \
-    gnupg \
-    unzip \
-    curl \
+    python3 \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Google Chrome (updated method for newer Debian)
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install ChromeDriver
-RUN CHROME_DRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE` \
-    && wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip \
-    && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
-    && rm /tmp/chromedriver.zip \
-    && chmod +x /usr/local/bin/chromedriver
-
-# Install Python dependencies
-RUN pip install --no-cache-dir selenium
+# Install Selenium for Python
+RUN pip3 install --no-cache-dir selenium
 
 # Create directory for test results
 RUN mkdir -p /test-results
@@ -35,4 +21,4 @@ WORKDIR /tests
 COPY selenium_tests.py .
 
 # Run tests
-CMD ["python", "selenium_tests.py"]
+CMD ["python3", "selenium_tests.py"]
