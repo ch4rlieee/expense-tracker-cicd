@@ -162,7 +162,8 @@ class ExpenseTrackerTests(unittest.TestCase):
 def suite():
     """Create test suite"""
     test_suite = unittest.TestSuite()
-    test_suite.addTest(unittest.makeSuite(ExpenseTrackerTests))
+    # Use TestLoader instead of deprecated makeSuite
+    test_suite.addTests(unittest.TestLoader().loadTestsFromTestCase(ExpenseTrackerTests))
     return test_suite
 
 if __name__ == "__main__":
