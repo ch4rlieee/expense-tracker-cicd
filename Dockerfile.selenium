@@ -6,6 +6,7 @@ USER root
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Selenium for Python
@@ -17,8 +18,13 @@ RUN mkdir -p /test-results
 # Set working directory
 WORKDIR /tests
 
-# Copy test scripts
+# Copy test scripts and entrypoint
 COPY selenium_tests.py .
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint. sh
 
-# Run tests
-CMD ["python3", "selenium_tests.py"]
+# Switch back to seluser for running selenium
+USER seluser
+
+# Run the entrypoint script
+ENTRYPOINT ["/entrypoint.sh"]
