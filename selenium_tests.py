@@ -14,17 +14,33 @@ class ExpenseTrackerTests(unittest.TestCase):
     def setUpClass(cls):
         """Set up Chrome driver with headless options"""
         chrome_options = Options()
-        chrome_options.add_argument('--headless')
+        
+        # Essential Chrome arguments for Docker/headless environment
+        chrome_options.add_argument('--headless=new')
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--disable-software-rasterizer')
+        chrome_options.add_argument('--disable-extensions')
+        chrome_options.add_argument('--disable-setuid-sandbox')
         chrome_options.add_argument('--window-size=1920,1080')
+        chrome_options.add_argument('--remote-debugging-port=9222')
+        chrome_options.add_argument('--disable-dev-tools')
+        chrome_options.add_argument('--disable-background-networking')
+        chrome_options.add_argument('--disable-default-apps')
+        chrome_options.add_argument('--disable-sync')
+        chrome_options.add_argument('--metrics-recording-only')
+        chrome_options.add_argument('--mute-audio')
+        
+        # Additional stability options
+        chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        chrome_options.add_experimental_option('useAutomationExtension', False)
         
         # Initialize the driver
         cls.driver = webdriver.Chrome(options=chrome_options)
         cls.driver.implicitly_wait(20)
         
-        # Application URL - update this to match your deployment
+        # Application URL - use Docker network alias
         cls.base_url = "http://webapp:8080"
     
     @classmethod
