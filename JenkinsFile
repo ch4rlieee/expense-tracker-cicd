@@ -124,7 +124,7 @@ pipeline {
                 echo '✓ Application container started on test network'
                 
                 // Wait for app to be ready
-                sleep(time: 10, unit: 'SECONDS')
+                sleep(time: 20, unit: 'SECONDS')
                 
                 // Verify app is responding
                 sh 'curl -f http://localhost:8080 || exit 1'
